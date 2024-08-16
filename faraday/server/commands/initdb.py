@@ -30,6 +30,7 @@ from sqlalchemy.sql import text
 import faraday.server.config
 from faraday.server.config import CONST_FARADAY_HOME_PATH, LOCAL_CONFIG_FILE, FARADAY_BASE
 from faraday.server.utils.database import is_unique_constraint_violation
+from security import safe_command
 
 init()
 
@@ -342,7 +343,7 @@ class InitDB:
             postgres_command = ['psql', 'postgres']
         password = self.generate_random_pw(25)
         command = postgres_command + ['-c', f'CREATE ROLE {username} WITH LOGIN PASSWORD \'{password}\';']
-        p = Popen(command, stderr=psql_log_file, stdout=psql_log_file)  # nosec
+        p = safe_command.run(Popen, command, stderr=psql_log_file, stdout=psql_log_file)  # nosec
         p.wait()
         psql_log_file.seek(0)
         output = psql_log_file.read()
@@ -395,7 +396,7 @@ class InitDB:
 
         print(f'Creating database {database_name}')
         command = postgres_command + ['createdb', '-E', 'utf8', '-O', username, database_name]
-        p = Popen(command, stderr=psql_log_file, stdout=psql_log_file, cwd='/tmp')  # nosec
+        p = safe_command.run(Popen, command, stderr=psql_log_file, stdout=psql_log_file, cwd='/tmp')  # nosec
         p.wait()
         return_code = p.returncode
         psql_log_file.seek(0)
