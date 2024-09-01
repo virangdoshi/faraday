@@ -24,7 +24,6 @@ import flask
 import flask_login
 import jwt
 import pyotp
-import requests
 from depot.manager import DepotManager
 from flask import Flask, session, g, request
 from flask.json import JSONEncoder
@@ -63,6 +62,7 @@ from faraday.settings import load_settings
 
 # Don't move this import from here
 from nplusone.ext.flask_sqlalchemy import NPlusOne
+from security import safe_requests
 
 logger = logging.getLogger(__name__)
 audit_logger = logging.getLogger('audit')
@@ -289,7 +289,7 @@ def user_logged_in_successful(app, user):
         params = {'version': faraday.__version__, 'key': 'white', 'client': user_agent}
         try:
             logger.debug('Send Faraday-Client license_check')
-            res = requests.get(HOME_URL, params=params, timeout=1, verify=True)
+            res = safe_requests.get(HOME_URL, params=params, timeout=1, verify=True)
             logger.debug("Faraday-Client license_check response: %s", res.text)
         except Exception as e:
             logger.warning("Error sending client license_check [%s]", e)

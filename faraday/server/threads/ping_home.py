@@ -7,11 +7,9 @@ See the file 'doc/LICENSE' for the license information
 import logging
 import threading
 
-# Related third party imports
-import requests
-
 # Local application imports
 import faraday
+from security import safe_requests
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +26,7 @@ class PingHomeThread(threading.Thread):
         logger.info("Ping Home Thread [Start]")
         while not self.__event.is_set():
             try:
-                res = requests.get(HOME_URL, params={'version': faraday.__version__, 'key': 'white'},
+                res = safe_requests.get(HOME_URL, params={'version': faraday.__version__, 'key': 'white'},
                                    timeout=1, verify=True)
                 if res.status_code != 200:
                     logger.error("Invalid response from portal")
