@@ -29,8 +29,8 @@ def main(deb_file, rpm_file):
     res = requests.post(
         "https://api.github.com/repos/infobyte/faraday/releases",
         json=release_data,
-        headers=headers
-    )
+        headers=headers, 
+    timeout=60)
     res.raise_for_status()
     release_id = res.json()['id']
     for asset_file in (Path(deb_file), Path(rpm_file)):
@@ -40,7 +40,7 @@ def main(deb_file, rpm_file):
         params = (('name', asset_file.name),)
         data = open(asset_file, mode="rb").read()
         url = f"https://uploads.github.com/repos/infobyte/faraday/releases/{release_id}/assets"
-        res = requests.post(url, headers=headers, params=params, data=data)
+        res = requests.post(url, headers=headers, params=params, data=data, timeout=60)
         res.raise_for_status()
         print(res.json())
 
