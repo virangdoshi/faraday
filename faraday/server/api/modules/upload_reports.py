@@ -6,7 +6,6 @@ See the file 'doc/LICENSE' for the license information
 
 # Standard library imports
 import string
-import random
 import logging
 from datetime import datetime
 
@@ -33,6 +32,7 @@ from faraday.server.models import Workspace, Command, db
 from faraday.server.threads.reports_processor import REPORTS_QUEUE
 from faraday.server.utils.web import gzipped
 from faraday.settings.reports import ReportsSettings
+import secrets
 
 upload_api = Blueprint('upload_reports', __name__)
 logger = logging.getLogger(__name__)
@@ -91,7 +91,7 @@ class UploadReportView(GenericWorkspacedView):
         if report_file:
 
             chars = string.ascii_uppercase + string.digits
-            random_prefix = ''.join(random.choice(chars) for _ in range(12))  # nosec
+            random_prefix = ''.join(secrets.choice(chars) for _ in range(12))  # nosec
             raw_report_filename = f'{random_prefix}_{secure_filename(report_file.filename)}'
 
             try:
