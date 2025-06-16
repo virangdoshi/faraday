@@ -10,6 +10,7 @@ import re
 import sys
 import platform
 import logging
+from security import safe_requests
 
 os.environ['FARADAY_MANAGE_RUNNING'] = "1"
 # If is linux and its installed with deb or rpm, it must run with a user in the faraday group
@@ -30,7 +31,6 @@ if platform.system() == "Linux":
         pass
 
 import click
-import requests
 import alembic.command
 from pgcli.main import PGCli
 from urllib.parse import urlparse
@@ -66,7 +66,7 @@ def cli():
 
 
 def check_faraday_server(url):
-    return requests.get(url)
+    return safe_requests.get(url)
 
 
 @click.command(help="Show all URLs in Faraday Server API")
