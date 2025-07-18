@@ -1,7 +1,6 @@
 # Standard library imports
 import logging
 import string
-import random
 import json
 import time
 from datetime import datetime, timedelta
@@ -56,6 +55,7 @@ from faraday.server.api.modules import (
 )
 from faraday.server.api.modules.websocket_auth import require_agent_token
 from faraday.server.config import CONST_FARADAY_HOME_PATH
+import secrets
 
 bulk_create_api = flask.Blueprint('bulk_create_api', __name__)
 logger = logging.getLogger(__name__)
@@ -586,7 +586,7 @@ class BulkCreateView(GenericWorkspacedView):
         if data['hosts']:
             # Create random file
             chars = string.ascii_uppercase + string.digits
-            random_prefix = ''.join(random.choice(chars) for _ in range(30))  # nosec
+            random_prefix = ''.join(secrets.choice(chars) for _ in range(30))  # nosec
             json_file = f"{random_prefix}.json"
             file_path = CONST_FARADAY_HOME_PATH / 'uploaded_reports' / json_file
             with file_path.open('w') as output:
