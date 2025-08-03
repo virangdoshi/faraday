@@ -203,7 +203,7 @@ def get_server_pid(port):
         # If PID file is badly written, delete it and
         # assume server is not running
         try:
-            pid = int(pid_file.readline())
+            pid = int(pid_file.readline(5_000_000))
         except ValueError:
             logger.warning('PID file was found but is corrupted. '
                            'Assuming server is not running. Please check manually'
